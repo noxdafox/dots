@@ -3,8 +3,8 @@
 PROJECTS=$HOME/development/
 
 # add Python projects to PYTHONPATH
-for package in $(find /home/noxdafox/development/ -mindepth 3 -maxdepth 4 \
-                      -name "*__init__.py" | grep -Ev "doc|test")
+for package in $(find $PROJECTS -mindepth 3 -maxdepth 3 -name "*__init__.py" |
+                     grep -Ev "doc|test")
 do
     export PYTHONPATH=${PYTHONPATH}:${package%/*/*}
 done
