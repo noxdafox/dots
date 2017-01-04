@@ -3,8 +3,15 @@
 PROJECTS=$HOME/development/
 
 # add Python projects to PYTHONPATH
-for package in $(find $PROJECTS -mindepth 3 -maxdepth 3 -name "*__init__.py" |
-                     grep -Ev "doc|test")
+exclude_regex=".*(doc|test|build|debian|python|example).*"
+## /project/package/__init__.py
+stdpkg_regex="^$PROJECTS\/?([^\/]+\/){2,2}__init__.py$"
+## /project/(src|lib)/package/__init__.py
+srcpkg_regex="^$PROJECTS\/?[^\/]+\/(src|lib)\/[^\/]+\/__init__.py$"
+
+for package in $(find $PROJECTS -regextype posix-extended \
+                      \( -regex $stdpkg_regex -o -regex $srcpkg_regex \) \
+                      -a ! -regex $exclude)
 do
     export PYTHONPATH=${PYTHONPATH}:${package%/*/*}
 done
