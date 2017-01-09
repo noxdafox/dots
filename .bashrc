@@ -86,6 +86,11 @@ if [ -f ~/.environment ]; then
     . ~/.environment
 fi
 
+# Bash completion
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    . /etc/bash_completion
+fi
+
 # Git holy prompt
 ## Configure colors, if available.
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
