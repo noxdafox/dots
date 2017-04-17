@@ -9,6 +9,7 @@ esac
 # history
 HISTSIZE=10000
 HISTFILESIZE=20000
+HISTTIMEFORMAT="%d/%m/%y %T "
 ## don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth
 ## append to the history file, don't overwrite it
