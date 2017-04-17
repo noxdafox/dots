@@ -92,6 +92,30 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+# Set timestamps of command
+function pre_commmand() {
+  if [ -z "$AT_PROMPT" ]; then
+    return
+  fi
+  unset AT_PROMPT
+
+  echo -e "Started: $(date)\n"
+}
+trap "pre_commmand" DEBUG
+
+FIRST_PROMPT=1
+function post_command() {
+  AT_PROMPT=1
+
+  if [ -n "$FIRST_PROMPT" ]; then
+    unset FIRST_PROMPT
+    return
+  fi
+
+  echo -e "\nEnded: $(date)"
+}
+PROMPT_COMMAND="post_command"
+
 # Git holy prompt
 ## Configure colors, if available.
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -147,4 +171,4 @@ git_prompt ()
 }
 
 ## Thy holy prompt.
-PROMPT_COMMAND="$PROMPT_COMMAND PS1=\"${TITLEBAR}${c_user}\u${c_reset}@${c_user}\h${c_reset}:${c_path}\w${c_reset}\$(git_prompt)\$ \" ;"
+PS1="${TITLEBAR}${c_user}\u${c_reset}@${c_user}\h${c_reset}:${c_path}\w${c_reset}$(git_prompt)\$ "
