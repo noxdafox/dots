@@ -93,13 +93,36 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 # Set timestamps of command
+log_command() {
+    DURATION="$2"
+    RESET_COLOR=$(tput sgr0)
+    TIMESTAMP=$(date -I'seconds')
+
+    if [ $RETURN_CODE -eq 0 ]; then
+        COLOR=$(tput setaf 2)
+        STATUS="OK"
+    else
+        COLOR=$(tput setaf 1)
+        STATUS="ERROR: $RETURN_CODE"
+    fi
+
+    let COL=$(tput cols)
+
+    printf "%s%*s%s\n" "$COLOR" $COL \
+           "[$TIMESTAMP] [$STATUS] [$DURATION]" "$RESET_COLOR"
+}
+
+function exit_status() {
+  RETURN_CODE=$?
+}
+
 function pre_commmand() {
   if [ -z "$AT_PROMPT" ]; then
     return
   fi
   unset AT_PROMPT
 
-  echo -e "Started: $(date)\n"
+  COMMAND_START=$SECONDS
 }
 trap "pre_commmand" DEBUG
 
@@ -112,19 +135,21 @@ function post_command() {
     return
   fi
 
-  echo -e "\nEnded: $(date)"
-}
-PROMPT_COMMAND="post_command"
+  DURATION=$(expr $SECONDS - $COMMAND_START)
+  unset COMMAND_START
 
-# Git holy prompt
+  log_command $RETURN_CODE $DURATION
+}
+
+# Git prompt
 ## Configure colors, if available.
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    c_reset='\[\e[0m\]'
-    c_user='\[\e[0;32m\]'
-    c_path='\[\e[1;34m\]'
-    c_git_clean='\[\e[0;37m\]'
-    c_git_staged='\[\e[0;32m\]'
-    c_git_unstaged='\[\e[0;31m\]'
+    c_reset=$(tput sgr0)
+    c_user=$(tput setaf 2)
+    c_path=$(tput setaf 3)
+    c_git_clean=$(tput setaf 7)
+    c_git_staged=$(tput setaf 2)
+    c_git_unstaged=$(tput setaf 1)
 else
     c_reset=
     c_user=
@@ -170,5 +195,6 @@ git_prompt ()
     echo "[$git_color$GIT_BRANCH$c_reset]"
 }
 
-## Thy holy prompt.
-PS1="${TITLEBAR}${c_user}\u${c_reset}@${c_user}\h${c_reset}:${c_path}\w${c_reset}$(git_prompt)\$ "
+PROMPT_COMMAND="exit_status
+PS1=\"${TITLEBAR}${c_user}\u${c_reset}@${c_user}\h${c_reset}:${c_path}\w${c_reset}\$(git_prompt)\$ \"
+post_command"
