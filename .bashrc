@@ -6,11 +6,6 @@ case $- in
       *) return;;
 esac
 
-# enable colors inside Emacs shell
-if [ "$INSIDE_EMACS" ]; then
-    export TERM=ansi COLORTERM=1
-fi
-
 # history
 HISTSIZE=10000
 HISTFILESIZE=20000

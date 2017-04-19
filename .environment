@@ -15,3 +15,8 @@ for package in $(find $PROJECTS -regextype posix-extended \
 do
     export PYTHONPATH=${PYTHONPATH}:${package%/*/*}
 done
+
+# enable colors inside Emacs shell
+if [ "$INSIDE_EMACS" ]; then
+    export TERM=ansi COLORTERM=1
+fi
