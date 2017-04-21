@@ -50,107 +50,105 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+# Configure colors
+if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    color_reset=$(tput sgr0)
+    color_red=$(tput setaf 1)
+    color_green=$(tput setaf 2)
+    color_yellow=$(tput setaf 3)
+    color_blue=$(tput setaf 4)
+    color_neutral=$(tput setaf 7)
+else
+    color_reset=
+    color_red=
+    color_green=
+    color_yellow=
+    color_blue=
+    color_neutral=
+fi
+
 # Print command information after execution
 function pre_command() {
-  if [ -z "$AT_PROMPT" ]; then
+  if [ -z "$at_prompt" ]; then
     return
   fi
-  unset AT_PROMPT
+  unset at_prompt
 
-  COMMAND_START=$SECONDS
+  command_start=$SECONDS
 }
 trap "pre_command" DEBUG
 
-FIRST_PROMPT=1
+first_prompt=1
 function post_command() {
-  AT_PROMPT=1
+  at_prompt=1
 
-  if [ -n "$FIRST_PROMPT" ]; then
-    unset FIRST_PROMPT
+  if [ -n "$first_prompt" ]; then
+    unset first_prompt
     return
   fi
 
-  DURATION=$(expr $SECONDS - $COMMAND_START)
-  unset COMMAND_START
+  duration=$(expr $SECONDS - $command_start)
+  unset command_start
 
-  log_command_status $RETURN_CODE $DURATION
+  log_command_status $return_code $duration
 }
 
 function command_exit_code() {
-  RETURN_CODE=$?
+  return_code=$?
 }
 
 log_command_status() {
-    DURATION="$2"
-    RESET_COLOR=$(tput sgr0)
-    TIMESTAMP=$(date -I'seconds')
+    duration="$2"
+    timestamp=$(date -I'seconds')
 
-    if [ $RETURN_CODE -eq 0 ]; then
-        COLOR=$(tput setaf 2)
-        STATUS="OK"
+    if [ $return_code -eq 0 ]; then
+        color=$color_green
+        status_message="OK"
     else
-        COLOR=$(tput setaf 1)
-        STATUS="ERROR: $RETURN_CODE"
+        color=$color_red
+        status_message="ERROR: $return_code"
     fi
 
-    printf "%s%*s%s\n" "$COLOR" $COLUMNS \
-           "[$TIMESTAMP] [$STATUS] [$DURATION]" "$RESET_COLOR"
+    printf "%s%*s%s\n" "$color" $COLUMNS \
+           "[$timestamp] [$status_message] [$duration]" "$color_reset"
 }
-
-# Git prompt
-## Configure colors, if available.
-if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    c_reset=$(tput sgr0)
-    c_user=$(tput setaf 2)
-    c_path=$(tput setaf 3)
-    c_git_clean=$(tput setaf 7)
-    c_git_staged=$(tput setaf 2)
-    c_git_unstaged=$(tput setaf 1)
-else
-    c_reset=
-    c_user=
-    c_path=
-    c_git_clean=
-    c_git_staged=
-    c_git_unstaged=
-fi
 
 ## Add the titlebar information when it is supported.
 case $TERM in
 xterm*|rxvt*)
-    TITLEBAR='\[\e]0;\u@\h: \w\a\]';
+    titlebar='\[\e]0;\u@\h: \w\a\]';
     ;;
 *)
-    TITLEBAR="";
+    titlebar="";
     ;;
 esac
 
 ## Function to assemble the Git parsingart of our prompt.
 git_prompt ()
 {
-    GIT_DIR=`git rev-parse --git-dir 2>/dev/null`
-    if [ -z "$GIT_DIR" ]; then
+    git_dir=`git rev-parse --git-dir 2>/dev/null`
+    if [ -z "$git_dir" ]; then
         return 0
     fi
-    GIT_HEAD=`cat $GIT_DIR/HEAD`
-    GIT_BRANCH=${GIT_HEAD##*/}
-    if [ ${#GIT_BRANCH} -eq 40 ]; then
-        GIT_BRANCH="(no branch)"
+    git_head=`cat $git_dir/HEAD`
+    git_branch=${git_head##*/}
+    if [ ${#git_branch} -eq 40 ]; then
+        git_branch="(no branch)"
     fi
-    STATUS=`git status --porcelain`
-    if [ -z "$STATUS" ]; then
-        git_color="${c_git_clean}"
+    git_status=`git status --porcelain`
+    if [ -z "$git_status" ]; then
+        git_color="\[${color_neutral}\]"
     else
-        echo -e "$STATUS" | grep -q '^ [A-Z\?]'
+        echo -e "$git_status" | grep -q '^ [A-Z\?]'
         if [ $? -eq 0 ]; then
-            git_color="${c_git_unstaged}"
+            git_color="\[${color_red}\]"
         else
-            git_color="${c_git_staged}"
+            git_color="\[${color_green}\]"
         fi
     fi
-    echo "[$git_color$GIT_BRANCH$c_reset]"
+    echo "[$git_color$git_branch$color_reset]"
 }
 
 PROMPT_COMMAND="command_exit_code
-PS1=\"${TITLEBAR}${c_user}\u${c_reset}@${c_user}\h${c_reset}:${c_path}\w${c_reset}\$(git_prompt)\$ \"
+PS1=\"${titlebar}\[${color_green}\]\u\[${color_reset}\]@\[${color_green}\]\h\[${color_reset}\]:\[${color_blue}\]\w\[${color_reset}\]\$(git_prompt)\$ \"
 post_command"
