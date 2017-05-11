@@ -7,8 +7,8 @@
 ;; Remap CTRL and Win characters
 (run-shell-command "xmodmap -e \"clear control\"")
 (run-shell-command "xmodmap -e \"clear mod4\"")
-(run-shell-command "xmodmap -e \"keycode 105 = F20\"") ; Ctrl_R
-(run-shell-command "xmodmap -e \"keycode 134 = F20\"") ; Super_R
+(run-shell-command "xmodmap -e \"keycode 105 = F35\"") ; Ctrl_R
+(run-shell-command "xmodmap -e \"keycode 134 = F35\"") ; Super_R
 (run-shell-command "xmodmap -e \"add control = Control_L Super_L\"")
 
 ;; Enable compositor
@@ -18,7 +18,7 @@
  "feh --bg-scale /home/noxdafox/images/wallpapers/bansky_donut.jpg")
 
 ;; Change the Stumpwm prefix key: Use right Super or Control
-(set-prefix-key (kbd "F20"))
+(set-prefix-key (kbd "F35"))
 
 ;; Set mouse focus policy
 (setf *mouse-focus-policy* :click)
