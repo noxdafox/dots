@@ -5,11 +5,11 @@
 (load "/usr/share/common-lisp/source/stumpwm/battery-portable.lisp")
 
 ;; Remap CTRL and Win characters
-(run-shell-command "xmodmap -e \"clear control\"")
-(run-shell-command "xmodmap -e \"clear mod4\"")
-(run-shell-command "xmodmap -e \"keycode 105 = F35\"") ; Ctrl_R
-(run-shell-command "xmodmap -e \"keycode 134 = F35\"") ; Super_R
-(run-shell-command "xmodmap -e \"add control = Control_L Super_L\"")
+(run-shell-command "xmodmap -e \"clear control\"" t)
+(run-shell-command "xmodmap -e \"clear mod4\"" t)
+(run-shell-command "xmodmap -e \"keycode 105 = F35\"" t) ; Ctrl_R
+(run-shell-command "xmodmap -e \"keycode 134 = F35\"" t) ; Super_R
+(run-shell-command "xmodmap -e \"add control = Control_L Super_L\"" t)
 
 ;; Enable compositor
 (run-shell-command "compton -b")
