@@ -109,6 +109,7 @@ log_command_status() {
         status_message="ERROR: $return_code"
     fi
 
+    printf "\n"
     printf "%s%*s%s\n" "$color" $COLUMNS \
            "[$timestamp] [$status_message] [$duration]" "$color_reset"
 }
