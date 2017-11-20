@@ -2,6 +2,10 @@
 
 (in-package :stumpwm)
 
+;; Start VMWare User Agent
+(run-shell-command "/usr/bin/vmware-user-suid-wrapper")
+
+;; Battery mode-line plugin
 (load "/usr/share/common-lisp/source/stumpwm/battery-portable.lisp")
 
 ;; Remap CTRL and Win characters
@@ -11,11 +15,9 @@
 (run-shell-command "xmodmap -e \"keycode 134 = F35\"" t) ; Super_R
 (run-shell-command "xmodmap -e \"add control = Control_L Super_L\"" t)
 
-;; Enable compositor
-(run-shell-command "compton -b")
 ;; Set background
 (run-shell-command
- "feh --bg-scale /home/noxdafox/images/wallpapers/bansky_donut.jpg")
+"feh --bg-scale /home/noxdafox/images/banksy_donut.jpg")
 
 ;; Change the Stumpwm prefix key: Use right Super or Control
 (set-prefix-key (kbd "F35"))
@@ -37,7 +39,7 @@
 ;; Set groups AKA desktops
 (run-commands
  "grename Development"
- "gnewb Web"
+ "gnewbg Web"
  "gnewbg Terminal"
  "gnewbg Miscellaneous")
 
@@ -47,7 +49,7 @@
   (run-or-raise "pcmanfm" '(:class "PCManFM")))
 (defcommand browser () ()
   "Starts the browser or switch to it, if it is already running."
-  (run-or-raise "chromium" '(:class "Chromium")))
+  (run-or-raise "firefox" '(:class "Firefox")))
 (defcommand terminal () ()
   "Launch the terminal emulator."
   (run-or-raise "terminator --title terminal" '(:class "terminal")))
