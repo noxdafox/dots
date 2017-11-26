@@ -2,6 +2,9 @@
 
 PROJECTS=$HOME/development/
 
+# add scripts to Guile load path
+GUILE_LOAD_PATH=${GUILE_LOAD_PATH}:~/development/spells/guile
+
 # add Python projects to PYTHONPATH
 exclude_regex=".*(doc|test|build|debian|python|example).*"
 ## /project/package/__init__.py
