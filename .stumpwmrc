@@ -1,0 +1,69 @@
+;; -*-lisp-*-
+
+(in-package :stumpwm)
+
+;; Start VMWare User Agent
+(run-shell-command "/usr/bin/vmware-user-suid-wrapper")
+
+;; Battery mode-line plugin
+(load "/usr/share/common-lisp/source/stumpwm/battery-portable.lisp")
+
+;; Remap CTRL and Win characters
+(run-shell-command "xmodmap -e \"clear control\"" t)
+(run-shell-command "xmodmap -e \"clear mod4\"" t)
+(run-shell-command "xmodmap -e \"keycode 105 = F35\"" t) ; Ctrl_R
+(run-shell-command "xmodmap -e \"keycode 134 = F35\"" t) ; Super_R
+(run-shell-command "xmodmap -e \"add control = Control_L Super_L\"" t)
+
+;; Set background
+(run-shell-command
+"feh --bg-scale /home/noxdafox/images/banksy_donut.jpg")
+
+;; Change the Stumpwm prefix key: Use right Super or Control
+(set-prefix-key (kbd "F35"))
+
+;; Set mouse focus policy
+(setf *mouse-focus-policy* :click)
+
+;; Window borders
+(setf *normal-border-width* 0)
+(setf *maxsize-border-width* 0)
+(setf *transient-border-width* 0)
+(setf *window-border-style* :thin)
+
+;; Message window
+(setf *timeout-wait* 3)
+(setf *input-window-gravity* :center)
+(setf *message-window-gravity* :center)
+
+;; Set groups AKA desktops
+(run-commands
+ "grename Development"
+ "gnewbg Web"
+ "gnewbg Terminal"
+ "gnewbg Miscellaneous")
+
+;; Custom commands
+(defcommand home () ()
+  "Opens the home folder or switch to it, if it is already opened."
+  (run-or-raise "pcmanfm" '(:class "PCManFM")))
+(defcommand browser () ()
+  "Starts the browser or switch to it, if it is already running."
+  (run-or-raise "firefox" '(:class "Firefox")))
+(defcommand terminal () ()
+  "Launch the terminal emulator."
+  (run-or-raise "terminator --title terminal" '(:class "terminal")))
+
+;; Hotkeys
+(define-key *root-map* (kbd "h") "home")
+(define-key *root-map* (kbd "b") "browser")
+(define-key *root-map* (kbd "c") "terminal")
+
+;; Turn on the modeline
+(setf *mode-line-timeout* 1)
+(setf stumpwm:*screen-mode-line-format*
+      (list "%B | %n | "
+            '(:eval (run-shell-command "date | tr -d [:cntrl:]" t))
+            " | %W"))
+(if (not (head-mode-line (current-head)))
+    (toggle-mode-line (current-screen) (current-head)))
