@@ -67,7 +67,7 @@ else
     color_neutral=
 fi
 
-# Print command information after execution
+# print command information after execution
 function pre_command() {
   if [ -z "$at_prompt" ]; then
     return
@@ -142,14 +142,14 @@ git_prompt ()
     else
         echo -e "$git_status" | grep -q '^ [A-Z\?]'
         if [ $? -eq 0 ]; then
-            git_color=$color_red
+            git_color="\[${color_red}\]"
         else
-            git_color=$color_green
+            git_color="\[${color_green}\]"
         fi
     fi
-    echo "[\[$git_color\]$git_branch\[$color_reset\]]"
+    echo "[$git_color$git_branch$color_reset]"
 }
 
 PROMPT_COMMAND="command_exit_code
-PS1=\"${titlebar}\[${color_green}\]\u\[${color_reset}\]@\[${color_green}\]\h\[${color_reset}\]:\[${color_yellow}\]\w\[${color_reset}\]\$(git_prompt)\$ \"
+PS1=\"${titlebar}\[${color_green}\]\u\[${color_reset}\]@\[${color_green}\]\h\[${color_reset}\]:\[${color_blue}\]\w\[${color_reset}\]\$(git_prompt)\$ \"
 post_command"
