@@ -1,20 +1,13 @@
 #!/bin/bash
 
-PROJECTS=$HOME/development/
+# development path
+export DEVELOPMENT=$HOME/development
 
-# add Python projects to PYTHONPATH
-exclude_regex=".*(doc|test|build|debian|python|example).*"
-## /project/package/__init__.py
-stdpkg_regex="^$PROJECTS\/?([^\/]+\/){2,2}__init__.py$"
-## /project/(src|lib)/package/__init__.py
-srcpkg_regex="^$PROJECTS\/?[^\/]+\/(src|lib)\/[^\/]+\/__init__.py$"
+# add scripts to Guile load path
+export GUILE_LOAD_PATH=${GUILE_LOAD_PATH}:$DEVELOPMENT/spells/guile
 
-for package in $(find $PROJECTS -regextype posix-extended \
-                      \( -regex $stdpkg_regex -o -regex $srcpkg_regex \) \
-                      -a ! -regex $exclude)
-do
-    export PYTHONPATH=${PYTHONPATH}:${package%/*/*}
-done
+# add Python projects to Python path
+export PYTHONPATH=${PYTHONPATH}:$(find_python_projects $DEVELOPMENT)
 
 # enable colors inside Emacs shell
 if [ "$INSIDE_EMACS" ]; then
