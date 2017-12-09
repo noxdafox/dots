@@ -1,0 +1,15 @@
+[user]
+    name = Matteo Cafasso
+    email = noxdafox@gmail.com
+
+[core]
+    editor = emacs
+
+[init]
+    templatedir = ~/.git_templates
+
+[sendemail]
+    smtpEncryption = tls
+    smtpServer = smtp.gmail.com
+    smtpUser = noxdafox@gmail.com
+    smtpServerPort = 587
