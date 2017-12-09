@@ -8,3 +8,7 @@ Dotfiles collection
 .stumpwmrc - Stum Windows Manager configuration
 
 .xsessionrc - X Display manager initialization script
+
+.gitconfig - Git configuration file
+
+.git_templates - Git templates folder, contains user defined hooks
