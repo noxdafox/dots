@@ -1,0 +1,4 @@
+#!/bin/sh
+#
+# Run the linter on stashed files
+linter stashed
