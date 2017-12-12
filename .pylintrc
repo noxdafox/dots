@@ -1,0 +1,4 @@
+# Disable the following error messages
+# C0111 = Missing docstring
+
+disable=C0111
