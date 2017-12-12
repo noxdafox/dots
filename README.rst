@@ -12,3 +12,5 @@ Dotfiles collection
 .gitconfig - Git configuration file
 
 .git_templates - Git templates folder, contains user defined hooks
+
+.pylintrc - PyLint configuration file
