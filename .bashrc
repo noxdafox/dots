@@ -94,7 +94,7 @@ function post_command() {
 }
 
 function command_exit_code() {
-  return_code=$?
+    return_code=$?
 }
 
 log_command_status() {
@@ -138,18 +138,18 @@ git_prompt ()
     fi
     git_status=`git status --porcelain`
     if [ -z "$git_status" ]; then
-        git_color="\[${color_neutral}\]"
+        git_color=${color_neutral}
     else
         echo -e "$git_status" | grep -q '^ [A-Z\?]'
         if [ $? -eq 0 ]; then
-            git_color="\[${color_red}\]"
+            git_color=${color_red}
         else
-            git_color="\[${color_green}\]"
+            git_color=${color_green}
         fi
     fi
-    echo "[$git_color$git_branch$color_reset]"
+    echo "[\[${git_color}\]$git_branch\[${color_reset}\]]"
 }
 
-PROMPT_COMMAND="command_exit_code
+PROMPT_COMMAND="command_exit_code; history -a
 PS1=\"${titlebar}\[${color_green}\]\u\[${color_reset}\]@\[${color_green}\]\h\[${color_reset}\]:\[${color_blue}\]\w\[${color_reset}\]\$(git_prompt)\$ \"
 post_command"
